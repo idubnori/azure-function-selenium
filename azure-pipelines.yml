@@ -1,0 +1,28 @@
+variables:
+  - name: 'rootDirPrefix'
+    value: ''
+  - name: 'containerTag'
+    value: '$(Build.BuildId)'
+  - name: 'dockerfilePath'
+    value: 'DockerFile'
+  - name: 'imageRepository'
+    value: 'azure-function-selenium'
+  - name: 'containerRegistry'
+    value: 'acrtask1'
+
+jobs:
+- job: Phase_1
+  displayName: Phase1 - Build docker images
+  condition: succeededOrFailed()
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Docker@2
+    displayName: DockerBuild
+    inputs:
+      command: build
+      dockerfile: $(dockerfilePath)
+      buildContext: '$(rootDirPrefix)'
+      containerRegistry: $(containerRegistry)
+      repository: $(imageRepository)
+      tags: $(containerTag)
